@@ -1,33 +1,33 @@
-from notifications.models import Event, Subscriber, Notification
+from notifications.models import Event, User, Notification
 from datetime import datetime
 from typing import TypedDict, List
 
 
-class SubscriberPayload(TypedDict):
+class UserPayload(TypedDict):
     provider_id: str
-    subscriber_id: str
+    user_id: str
 
 
 class CreateEventPayload(TypedDict):
     event_id: str
-    event_provider: str
+    provider_id: str
     created_at: str
 
 
 class EventPayload(TypedDict):
     event_id: str
-    event_provider: str
+    provider_id: str
     created_at: str
 
 
 class NotificationPayload(TypedDict):
     event: EventPayload
-    subscriber: SubscriberPayload
+    user: UserPayload
 
 
 class CreateNotificationPayload(TypedDict):
     event: EventPayload
-    subscriber: SubscriberPayload
+    user: UserPayload
 
 
 def create_event(payload: CreateEventPayload) -> Event:
@@ -36,11 +36,9 @@ def create_event(payload: CreateEventPayload) -> Event:
 
 
 def create_notification(payload: CreateNotificationPayload) -> Notification:
-    subscriber = get_subscriber_or_create(payload["subscriber"])
+    user = get_user_or_create(payload["user"])
     event = get_event_or_create(payload["event"])
-    notification = get_notification_or_create(
-        {"event": event, "subscriber": subscriber}
-    )
+    notification = get_notification_or_create({"event": event, "user": user})
     return notification
 
 
@@ -51,17 +49,17 @@ def read_notification(payload: CreateNotificationPayload) -> Notification:
     return notification
 
 
-def get_subscriber_or_create(payload: SubscriberPayload) -> Subscriber:
-    subscriber, _ = Subscriber.objects.get_or_create(
-        subscriber_id=payload["subscriber_id"], provider_id=payload["provider_id"]
+def get_user_or_create(payload: UserPayload) -> User:
+    user, _ = User.objects.get_or_create(
+        user_id=payload["user_id"], provider_id=payload["provider_id"]
     )
-    return subscriber
+    return user
 
 
 def get_event_or_create(payload: EventPayload) -> Event:
     event, _ = Event.objects.get_or_create(
         event_id=payload["event_id"],
-        event_provider=payload["event_provider"],
+        provider_id=payload["provider_id"],
         created_at=datetime_from_timestamp(payload["created_at"]),
     )
     return event
@@ -69,7 +67,7 @@ def get_event_or_create(payload: EventPayload) -> Event:
 
 def get_notification_or_create(payload: NotificationPayload) -> Notification:
     notification, _ = Notification.objects.get_or_create(
-        event=payload["event"], subscriber=payload["subscriber"]
+        event=payload["event"], user=payload["user"]
     )
     return notification
 
