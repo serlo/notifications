@@ -6,27 +6,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0003_auto_20200130_1642'),
+        ("notifications", "0003_auto_20200130_1642"),
     ]
 
     operations = [
-        migrations.RenameModel(
-            old_name='Subscriber',
-            new_name='User',
+        migrations.RenameModel(old_name="Subscriber", new_name="User",),
+        migrations.RenameField(
+            model_name="event", old_name="event_provider", new_name="provider_id",
         ),
         migrations.RenameField(
-            model_name='event',
-            old_name='event_provider',
-            new_name='provider_id',
+            model_name="notification", old_name="subscriber", new_name="user",
         ),
         migrations.RenameField(
-            model_name='notification',
-            old_name='subscriber',
-            new_name='user',
-        ),
-        migrations.RenameField(
-            model_name='user',
-            old_name='subscriber_id',
-            new_name='user_id',
+            model_name="user", old_name="subscriber_id", new_name="user_id",
         ),
     ]

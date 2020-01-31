@@ -6,17 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0002_auto_20200130_1638'),
+        ("notifications", "0002_auto_20200130_1638"),
     ]
 
     operations = [
-        migrations.RenameModel(
-            old_name='User',
-            new_name='Subscriber',
-        ),
+        migrations.RenameModel(old_name="User", new_name="Subscriber",),
         migrations.RenameField(
-            model_name='subscriber',
-            old_name='user_id',
-            new_name='subscriber_id',
+            model_name="subscriber", old_name="user_id", new_name="subscriber_id",
         ),
     ]

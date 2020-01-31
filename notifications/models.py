@@ -18,4 +18,3 @@ class Notification(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     seen = models.BooleanField(default=False)
-

@@ -8,34 +8,69 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('event_id', models.CharField(max_length=200)),
-                ('event_provider', models.CharField(max_length=200)),
-                ('created_at', models.DateTimeField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("event_id", models.CharField(max_length=200)),
+                ("event_provider", models.CharField(max_length=200)),
+                ("created_at", models.DateTimeField()),
             ],
         ),
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user_id', models.CharField(max_length=200)),
-                ('provider_id', models.CharField(max_length=200)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("user_id", models.CharField(max_length=200)),
+                ("provider_id", models.CharField(max_length=200)),
             ],
         ),
         migrations.CreateModel(
-            name='Notification',
+            name="Notification",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('seen', models.BooleanField(default=False)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.Event')),
-                ('subscribers', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("seen", models.BooleanField(default=False)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="notifications.Event",
+                    ),
+                ),
+                (
+                    "subscribers",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="notifications.User",
+                    ),
+                ),
             ],
         ),
     ]

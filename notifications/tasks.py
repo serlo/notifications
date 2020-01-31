@@ -8,16 +8,13 @@ class UserPayload(TypedDict):
     user_id: str
 
 
-class CreateEventPayload(TypedDict):
-    event_id: str
-    provider_id: str
-    created_at: str
-
-
 class EventPayload(TypedDict):
     event_id: str
     provider_id: str
     created_at: str
+
+
+CreateEventPayload = EventPayload
 
 
 class NotificationPayload(TypedDict):
@@ -25,9 +22,7 @@ class NotificationPayload(TypedDict):
     user: UserPayload
 
 
-class CreateNotificationPayload(TypedDict):
-    event: EventPayload
-    user: UserPayload
+CreateNotificationPayload = NotificationPayload
 
 
 def create_event(payload: CreateEventPayload) -> Event:
