@@ -2,20 +2,15 @@ from django.db import models
 from typing import TypedDict
 
 # Create your models here.
-class UserJson(TypedDict):
-    user_id: str
-    provider_id: str
-
-
 class EventJson(TypedDict):
-    event: dict
-    created_at: str
+    event_id: str
+    provider_id: str
 
 
 class NotificationJson(TypedDict):
     event: EventJson
-    user: UserJson
-    seen: bool
+    content: str
+    created_at: str
 
 
 class Event(models.Model):
@@ -30,9 +25,6 @@ class Event(models.Model):
 class User(models.Model):
     user_id = models.CharField(max_length=200)
     provider_id = models.CharField(max_length=200)
-
-    def to_json(self) -> UserJson:
-        return {"user_id": self.user_id, "provider_id": self.provider_id}
 
 
 class Notification(models.Model):
