@@ -19,7 +19,7 @@ class Event(models.Model):
     created_at = models.DateTimeField()
 
     def to_json(self) -> EventJson:
-        return {"event_id": self.event_id, "provider_id": self.provider_id}
+        return {"id": self.event_id, "provider_id": self.provider_id}
 
 
 class User(models.Model):
