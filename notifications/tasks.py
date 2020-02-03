@@ -28,7 +28,6 @@ CreateNotificationPayload = NotificationPayload
 
 def create_event(payload: CreateEventPayload) -> Event:
     event = get_event_or_create(payload)
-    event.save()
     return event
 
 
