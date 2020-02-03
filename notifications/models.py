@@ -1,12 +1,25 @@
 from django.db import models
+from typing import TypedDict
 
 # Create your models here.
+class EventJson(TypedDict):
+    event_id: str
+    provider_id: str
+
+
+class NotificationJson(TypedDict):
+    event: EventJson
+    content: str
+    created_at: str
 
 
 class Event(models.Model):
     event_id = models.CharField(max_length=200)
     provider_id = models.CharField(max_length=200)
     created_at = models.DateTimeField()
+
+    def to_json(self) -> EventJson:
+        return {"event_id": self.event_id, "provider_id": self.provider_id}
 
 
 class User(models.Model):
@@ -18,3 +31,10 @@ class Notification(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     seen = models.BooleanField(default=False)
+
+    def to_json(self) -> NotificationJson:
+        return {
+            "event": self.event.to_json(),
+            "content": "iloveorange",
+            "created_at": self.event.created_at.isoformat(timespec="seconds"),
+        }

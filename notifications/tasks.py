@@ -32,8 +32,8 @@ def create_event(payload: CreateEventPayload) -> Event:
 
 def create_notification(payload: CreateNotificationPayload) -> Notification:
     user = get_user_or_create(payload["user"])
-    event = get_event_or_create(payload["event"])
-    notification = get_notification_or_create({"event": event, "user": user})
+    event = Event.objects.get(**payload["event"])
+    notification, _ = Notification.objects.get_or_create(event=event, user=user)
     return notification
 
 
@@ -51,20 +51,13 @@ def get_user_or_create(payload: UserPayload) -> User:
     return user
 
 
-def get_event_or_create(payload: EventPayload) -> Event:
+def get_event_or_create(payload: CreateEventPayload) -> Event:
     event, _ = Event.objects.get_or_create(
         event_id=payload["event_id"],
         provider_id=payload["provider_id"],
-        created_at=datetime_from_timestamp(payload["created_at"]),
+        created_at=payload["created_at"],
     )
     return event
-
-
-def get_notification_or_create(payload: NotificationPayload) -> Notification:
-    notification, _ = Notification.objects.get_or_create(
-        event=payload["event"], user=payload["user"]
-    )
-    return notification
 
 
 def datetime_from_timestamp(timestamp: str) -> datetime:
