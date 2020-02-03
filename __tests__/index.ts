@@ -7,8 +7,13 @@ const root = path.join(__dirname, '..')
 
 test('HTTP Contract', async () => {
   await new Verifier({
-    provider: 'Notifications',
+    provider: 'notifications:http',
     providerBaseUrl: 'http://localhost:8000',
+    // TODO: Can't use pactBrokerUrl
+    pactUrls: [
+      'https://pacts.serlo.org/pacts/provider/notifications%3Ahttp/consumer/serlo.org%3Ahttp/latest'
+    ],
+    validateSSL: false,
     stateHandlers: {
       'no notifications exist': () => {
         return axios.post('http://localhost:8000/pact/set-state/', {
@@ -16,14 +21,13 @@ test('HTTP Contract', async () => {
           state: 'no notifications exist'
         })
       },
-      'a notifications for user 123 and event 234 exists': () => {
+      'a notification for user 123 and event 234 exists': () => {
         return axios.post('http://localhost:8000/pact/set-state/', {
           consumer: 'serlo.org',
-          state: 'a notifications for user 123 and event 234 exists'
+          state: 'a notification for user 123 and event 234 exists'
         })
       }
-    },
-    pactUrls: [path.join(root, 'pacts', 'http', 'serlo.org-notifications.json')]
+    }
   }).verifyProvider()
 })
 
@@ -35,7 +39,6 @@ test('Message Contract', async () => {
           type: 'create-event',
           payload: {
             event: { provider_id: 'serlo.org', id: '123' },
-            user: { provider_id: 'serlo.org', id: '234' },
             created_at: '2015-08-06T16:53:10+01:00',
             source: { provider_id: 'serlo.org' }
           }
@@ -50,7 +53,6 @@ test('Message Contract', async () => {
           payload: {
             event: { provider_id: 'serlo.org', id: '123' },
             user: { provider_id: 'serlo.org', id: '234' },
-            created_at: '2015-08-06T16:53:10+01:00',
             source: { provider_id: 'serlo.org' }
           }
         }
@@ -71,8 +73,8 @@ test('Message Contract', async () => {
         return message
       }
     },
-    consumer: 'serlo.org',
-    provider: 'Notifications',
+    consumer: 'serlo.org:messages',
+    provider: 'notifications:messages',
     stateHandlers: {
       'no notifications exist': () => {
         return axios.post('http://localhost:8000/pact/set-state/', {
@@ -93,8 +95,9 @@ test('Message Contract', async () => {
         })
       }
     },
+    // TODO: Can't use pactBrokerUrl
     pactUrls: [
-      path.join(root, 'pacts', 'message', 'serlo.org-notifications.json')
+      'https://pacts.serlo.org/pacts/provider/notifications%3Amessages/consumer/serlo.org%3Amessages/latest'
     ]
   }).verify()
 })
