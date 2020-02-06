@@ -42,15 +42,17 @@ test('HTTP Contract', async () => {
     state: 'a event with id 234 exists',
     uponReceiving: 'render event 234 in format html',
     withRequest: {
-      method: 'GET',
-      path: '/event/render/234/html'
+      method: 'POST',
+      path: '/event/render/html',
+      body: ['234']
     },
     willRespondWith: {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
       body: {
-        id: '234',
-        body: Matchers.string()
+        '234': {
+          content: Matchers.string()
+        }
       }
     }
   })

@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "Serlo Education e.V.",
   "scripts": {
-    "start": "docker-compose up --detach",
+    "start": "docker-compose up --build --detach",
     "lint": "npm-run-all lint:*",
     "lint:format-prettier": "yarn _prettier --check",
     "lint:format-py": "yarn format:py --check",
@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@pact-foundation/pact": "^9.0.0",
-    "@types/jest": "^24.0.0",
+    "@types/jest": "^25.0.0",
     "@types/rimraf": "^2.0.0",
     "axios": "^0.19.0",
     "jest": "^25.0.0",

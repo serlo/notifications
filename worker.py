@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from typing import Any
 
-from confluent_kafka import Consumer, KafkaException, Producer
+from confluent_kafka import Consumer, KafkaException
 import django
 import os
 import json
@@ -12,31 +12,17 @@ django.setup()
 
 
 def main() -> None:
-    # TODO:
-    # from threads.worker import execute_message
+    from notifications.worker import execute_message
 
     consumer = Consumer(
         {
             "bootstrap.servers": "kafka:29092",
-            # TODO:
-            "group.id": "commenting-system",
+            "group.id": "notifications",
             "auto.offset.reset": "earliest",
         }
     )
 
-    producer = Producer({"bootstrap.servers": "kafka:29092"})
-
-    def delivery_report(err: Any, msg: Any) -> None:
-        if err:
-            sys.stderr.write("%% Message failed delivery: %s\n" % err)
-        else:
-            sys.stderr.write(
-                "%% Message delivered to %s [%d] @ %d\n"
-                % (msg.topic(), msg.partition(), msg.offset())
-            )
-
-    # TODO:
-    # consumer.subscribe(["comments-queue"])
+    consumer.subscribe(["notifications"])
     try:
         while True:
             producer.poll(0)
@@ -48,12 +34,7 @@ def main() -> None:
             else:
                 try:
                     data = json.loads(msg.value())
-                    # TODO:
-                    # data = execute_message(data)
-                    # TODO:
-                    # producer.produce(
-                    #     "comments", json.dumps(data), callback=delivery_report
-                    # )
+                    execute_message(data)
 
                 except Exception as e:
                     print(msg.value())
@@ -65,7 +46,6 @@ def main() -> None:
     finally:
         # Close down consumer to commit final offsets.
         consumer.close()
-        producer.flush()
 
 
 if __name__ == "__main__":
