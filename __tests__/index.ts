@@ -43,7 +43,7 @@ test('HTTP Contract', async () => {
     uponReceiving: 'render event 234 in format html',
     withRequest: {
       method: 'POST',
-      path: '/event/render/html',
+      path: '/events/render/html',
       body: ['234']
     },
     willRespondWith: {
