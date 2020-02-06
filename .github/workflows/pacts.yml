@@ -13,6 +13,7 @@ jobs:
           node-version: 10.x
       - run: yarn
       - run: yarn start
+      - run: sleep 10
       - run: yarn pacts
       - run: yarn pacts:publish
         env:
