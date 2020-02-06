@@ -32,7 +32,7 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     seen = models.BooleanField(default=False)
 
-    def to_json(self, format: str) -> NotificationJson:
+    def to_json(self) -> NotificationJson:
         return {
             "event": self.event.to_json(),
             "created_at": self.event.created_at.isoformat(timespec="seconds"),

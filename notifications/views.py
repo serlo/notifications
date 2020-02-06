@@ -3,7 +3,7 @@ import requests
 
 # Create your views here.
 from django.http import HttpRequest, JsonResponse
-from .models import Event, Notification, User
+from .models import Notification, User
 
 
 def index(_: HttpRequest, provider_id: str, user_id: str, format: str) -> JsonResponse:
@@ -12,19 +12,17 @@ def index(_: HttpRequest, provider_id: str, user_id: str, format: str) -> JsonRe
     except User.DoesNotExist:
         return JsonResponse([], safe=False)
     notifications = user.notification_set.all()
+    event_ids = [n.event.event_id for n in notifications]
+    rendered = requests.post(
+        url="http://host.docker.internal:9009/event/render/{}".format(format),
+        json=event_ids,
+    ).json()
 
-    def render(format: str, events_list: list):
-        r = requests.post(
-            url="http://host.docker.internal:9009/event/render/{}".format(format),
-            json=events_list,
-        )
-        return r.json()
+    def f(n: Notification):
+        temp = n.to_json()
+        temp["content"] = rendered[n.event.event_id]["content"]
+        return temp
 
-    notifications_list = [
-        notification.to_json(format) for notification in notifications
-    ]
-    events_list = [notification["event"]["id"] for notification in notifications_list]
-    contents = render(format, events_list)
-    for notification in notifications_list:
-        notification["content"] = contents[notification["event"]["id"]]
-    return JsonResponse(notifications_list, safe=False)
+    result = list(map(f, list(notifications)))
+
+    return JsonResponse(result, safe=False)
