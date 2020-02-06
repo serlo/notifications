@@ -15,8 +15,8 @@
     "format:py": "yarn _devtools black . --target-version py38",
     "test": "npm-run-all test:*",
     "test:py": "yarn m test",
-    "test:pact": "jest",
     "m": "docker-compose exec server python manage.py",
+    "pacts": "jest",
     "pacts:publish": "ts-node scripts/publish-pacts",
     "_devtools": "docker-compose run --rm devtools",
     "_prettier": "prettier \"{{__tests__,scripts}/**/*,*}.{js,jsx,ts,tsx,json,md,yaml,yml,css,scss}\""
