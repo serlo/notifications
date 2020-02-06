@@ -5,5 +5,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # TODO: only load in dev
     path("pact/", include("pact.urls")),
-    path("notifications/", include("notifications.urls")),
+    path("", include("notifications.urls")),
 ]

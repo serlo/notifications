@@ -4,5 +4,9 @@ from . import views
 
 app_name = "notifications"
 urlpatterns = [
-    path("<str:provider_id>/<str:user_id>/<str:format>", views.index, name="index")
+    path(
+        "<str:lang>/<str:provider_id>/<str:user_id>/<str:format>",
+        views.index,
+        name="index",
+    )
 ]

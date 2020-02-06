@@ -101,7 +101,7 @@ USE_L10N = True
 USE_TZ = True
 
 EVENT_RENDERERS = {
-    "serlo.org": "http://host.docker.internal:9009/events/render/",
+    "serlo.org": {"en": "http://host.docker.internal:9009/events/render/"}
 }
 
 

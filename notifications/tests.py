@@ -25,9 +25,7 @@ class NotificationIndexViewTests(TestCase):
     def test_one_notification(self) -> None:
         mock_response = Response()
         mock_response.status_code = 200
-        mock_response.json = MagicMock(
-            return_value={"234": {"content": "iloveorange"}}
-        )
+        mock_response.json = MagicMock(return_value={"234": {"content": "iloveorange"}})
         mocked_post = MagicMock(return_value=mock_response)
 
         with patch("requests.post", mocked_post):
@@ -103,6 +101,7 @@ class NotificationIndexViewTests(TestCase):
         url = reverse(
             "notifications:index",
             kwargs={
+                "lang": "en",
                 "provider_id": user["provider_id"],
                 "user_id": user["id"],
                 "format": "html",
