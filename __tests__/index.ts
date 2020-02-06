@@ -1,18 +1,63 @@
-import { MessageProviderPact, Verifier } from '@pact-foundation/pact'
+import {
+  Matchers,
+  MessageProviderPact,
+  Pact,
+  Verifier
+} from '@pact-foundation/pact'
 
 import axios from 'axios'
 import * as path from 'path'
+import * as util from 'util'
+import * as rimraf from 'rimraf'
+
+const rm = util.promisify(rimraf)
 
 const root = path.join(__dirname, '..')
+const pactDir = path.join(root, 'pacts')
+
+const httpPact = new Pact({
+  consumer: 'notifications:http',
+  provider: 'serlo.org:http',
+  port: 9009,
+  log: path.join(root, 'pact-http.log'),
+  dir: path.join(pactDir, 'http'),
+  cors: true
+})
+
+beforeAll(async () => {
+  await rm(pactDir)
+  await httpPact.setup()
+})
+
+afterEach(async () => {
+  await httpPact.verify()
+})
+
+afterAll(async () => {
+  await httpPact.finalize()
+})
 
 test('HTTP Contract', async () => {
+  await httpPact.addInteraction({
+    state: 'a event with id 234 exists',
+    uponReceiving: 'render event 234 in format html',
+    withRequest: {
+      method: 'GET',
+      path: '/event/render/234/html'
+    },
+    willRespondWith: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: {
+        id: '234',
+        body: Matchers.string()
+      }
+    }
+  })
   await new Verifier({
     provider: 'notifications:http',
     providerBaseUrl: 'http://localhost:8000',
-    // TODO: Can't use pactBrokerUrl
-    pactUrls: [
-      'https://pacts.serlo.org/pacts/provider/notifications%3Ahttp/consumer/serlo.org%3Ahttp/latest'
-    ],
+    pactBrokerUrl: 'https://pacts.serlo.org',
     validateSSL: false,
     stateHandlers: {
       'no notifications exist': () => {
@@ -95,9 +140,6 @@ test('Message Contract', async () => {
         })
       }
     },
-    // TODO: Can't use pactBrokerUrl
-    pactUrls: [
-      'https://pacts.serlo.org/pacts/provider/notifications%3Amessages/consumer/serlo.org%3Amessages/latest'
-    ]
+    pactBrokerUrl: 'https://pacts.serlo.org'
   }).verify()
 })

@@ -1,4 +1,5 @@
 from django.db import models
+import requests
 from typing import TypedDict
 
 # Create your models here.
@@ -22,6 +23,11 @@ class Event(models.Model):
         return {"id": self.event_id, "provider_id": self.provider_id}
 
 
+    def render(self, format: str):
+        r = requests.get("http://host.docker.internal:9009/event/render/" + str(self.event_id) + "/" + format)
+        return r.json()["body"]
+
+
 class User(models.Model):
     user_id = models.CharField(max_length=200)
     provider_id = models.CharField(max_length=200)
@@ -32,9 +38,9 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     seen = models.BooleanField(default=False)
 
-    def to_json(self) -> NotificationJson:
+    def to_json(self, format: str) -> NotificationJson:
         return {
             "event": self.event.to_json(),
-            "content": "iloveorange",
+            "content": self.event.render(format),
             "created_at": self.event.created_at.isoformat(timespec="seconds"),
         }
