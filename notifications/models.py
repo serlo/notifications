@@ -22,9 +22,13 @@ class Event(models.Model):
     def to_json(self) -> EventJson:
         return {"id": self.event_id, "provider_id": self.provider_id}
 
-
     def render(self, format: str):
-        r = requests.get("http://host.docker.internal:9009/event/render/" + str(self.event_id) + "/" + format)
+        r = requests.get(
+            "http://host.docker.internal:9009/event/render/"
+            + str(self.event_id)
+            + "/"
+            + format
+        )
         return r.json()["body"]
 
 

@@ -11,5 +11,7 @@ def index(_: HttpRequest, provider_id: str, user_id: str, format: str) -> JsonRe
     except User.DoesNotExist:
         return JsonResponse([], safe=False)
     notifications = user.notification_set.all()
-    notifications_list = [notification.to_json(format) for notification in notifications]
+    notifications_list = [
+        notification.to_json(format) for notification in notifications
+    ]
     return JsonResponse(notifications_list, safe=False)
