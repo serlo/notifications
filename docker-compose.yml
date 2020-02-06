@@ -12,23 +12,17 @@ services:
       - .:/usr/src/app
     ports:
       - '8000:8000'
-    depends_on:
-      - migrate
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_NAME: postgres
+
   devtools:
     build:
       context: .
       dockerfile: docker/devtools/Dockerfile
     volumes:
       - .:/usr/src/app
-  migrate:
-    build:
-      context: .
-      dockerfile: docker/server/Dockerfile
-    command: ['python', 'manage.py', 'migrate']
-    volumes:
-      - .:/usr/src/app
-    depends_on:
-      - db
   zookeeper:
     image: confluentinc/cp-zookeeper:5.3.1
     ports:
