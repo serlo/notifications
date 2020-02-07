@@ -4,8 +4,7 @@ import {
   Pact,
   Verifier
 } from '@pact-foundation/pact'
-
-import axios from 'axios'
+import fetch from 'node-fetch'
 import * as path from 'path'
 import * as util from 'util'
 import * as rimraf from 'rimraf'
@@ -24,9 +23,32 @@ const httpPact = new Pact({
   cors: true
 })
 
+jest.setTimeout(30 * 1000)
+
 beforeAll(async () => {
+  await waitForServer()
   await rm(pactDir)
   await httpPact.setup()
+
+  async function waitForServer() {
+    const retries = 30
+    for (let attempt = 0; attempt < 30; attempt++) {
+      console.log(
+        'Waiting for server, ',
+        retries - attempt - 1,
+        'remaining attempts…'
+      )
+      const res = await fetch('http://localhost:8000/health')
+      if (res.status === 200 && (await res.json()) === 'ok') return
+      await wait()
+    }
+  }
+
+  function wait(ms = 1000) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms)
+    })
+  }
 })
 
 afterEach(async () => {
@@ -63,15 +85,21 @@ test('HTTP Contract', async () => {
     validateSSL: false,
     stateHandlers: {
       'no notifications exist': () => {
-        return axios.post('http://localhost:8000/pact/set-state/', {
-          consumer: 'serlo.org',
-          state: 'no notifications exist'
+        return fetch('http://localhost:8000/pact/set-state/', {
+          method: 'POST',
+          body: JSON.stringify({
+            consumer: 'serlo.org',
+            state: 'no notifications exist'
+          })
         })
       },
       'a notification for user 123 and event 234 exists': () => {
-        return axios.post('http://localhost:8000/pact/set-state/', {
-          consumer: 'serlo.org',
-          state: 'a notification for user 123 and event 234 exists'
+        return fetch('http://localhost:8000/pact/set-state/', {
+          method: 'POST',
+          body: JSON.stringify({
+            consumer: 'serlo.org',
+            state: 'a notification for user 123 and event 234 exists'
+          })
         })
       }
     }
@@ -90,8 +118,10 @@ test('Message Contract', async () => {
             source: { provider_id: 'serlo.org' }
           }
         }
-
-        await axios.post('http://localhost:8000/pact/execute-message/', message)
+        await fetch('http://localhost:8000/pact/execute-message/', {
+          method: 'POST',
+          body: JSON.stringify(message)
+        })
         return message
       },
       'a `create-notification` message': async () => {
@@ -103,7 +133,10 @@ test('Message Contract', async () => {
             source: { provider_id: 'serlo.org' }
           }
         }
-        await axios.post('http://localhost:8000/pact/execute-message/', message)
+        await fetch('http://localhost:8000/pact/execute-message/', {
+          method: 'POST',
+          body: JSON.stringify(message)
+        })
         return message
       },
       'a `read-notification` message': async () => {
@@ -116,7 +149,10 @@ test('Message Contract', async () => {
             source: { provider_id: 'serlo.org' }
           }
         }
-        await axios.post('http://localhost:8000/pact/execute-message/', message)
+        await fetch('http://localhost:8000/pact/execute-message/', {
+          method: 'POST',
+          body: JSON.stringify(message)
+        })
         return message
       }
     },
@@ -124,21 +160,30 @@ test('Message Contract', async () => {
     provider: 'notifications:messages',
     stateHandlers: {
       'no notifications exist': () => {
-        return axios.post('http://localhost:8000/pact/set-state/', {
-          consumer: 'serlo.org',
-          state: 'no notifications exist'
+        return fetch('http://localhost:8000/pact/set-state/', {
+          method: 'POST',
+          body: JSON.stringify({
+            consumer: 'serlo.org',
+            state: 'no notifications exist'
+          })
         })
       },
       'one event with id 123 exists': () => {
-        return axios.post('http://localhost:8000/pact/set-state/', {
-          consumer: 'serlo.org',
-          state: 'one event with id 123 exists'
+        return fetch('http://localhost:8000/pact/set-state/', {
+          method: 'POST',
+          body: JSON.stringify({
+            consumer: 'serlo.org',
+            state: 'one event with id 123 exists'
+          })
         })
       },
       'a notification for user 123 and event 234 exists': () => {
-        return axios.post('http://localhost:8000/pact/set-state/', {
-          consumer: 'serlo.org',
-          state: 'a notification for user 123 and event 234 exists'
+        return fetch('http://localhost:8000/pact/set-state/', {
+          method: 'POST',
+          body: JSON.stringify({
+            consumer: 'serlo.org',
+            state: 'a notification for user 123 and event 234 exists'
+          })
         })
       }
     },

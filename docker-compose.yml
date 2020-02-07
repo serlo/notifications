@@ -16,7 +16,6 @@ services:
       DATABASE_HOST: db
       DATABASE_USER: postgres
       DATABASE_NAME: postgres
-
   devtools:
     build:
       context: .
