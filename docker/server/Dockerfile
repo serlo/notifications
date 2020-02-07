@@ -7,5 +7,4 @@ RUN pip install --requirement requirements.txt
 COPY docker/server/run.sh /tmp/run.sh
 
 EXPOSE 8000
-RUN ls
 CMD ["sh", "/tmp/run.sh"]

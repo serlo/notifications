@@ -1,20 +1,14 @@
 name: Pacts
 on:
-  push:
-    branches:
-      - master
+  pull_request:
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 10.x
       - run: yarn
       - run: yarn start
       - run: yarn pacts
-      - run: yarn pacts:publish
-        env:
-          PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME }}
-          PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD }}
