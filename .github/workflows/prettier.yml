@@ -8,9 +8,13 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - run: yarn
-      - run: yarn lint:format-prettier
+      - name: Install dependencies
+        run: yarn
+      - name: Check formatting
+        run: yarn lint:format-prettier

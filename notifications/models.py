@@ -1,15 +1,14 @@
 from django.db import models
 from typing import TypedDict
 
-# Create your models here.
+
 class EventJson(TypedDict):
-    event_id: str
+    id: str
     provider_id: str
 
 
 class NotificationJson(TypedDict):
     event: EventJson
-    content: str
     created_at: str
 
 

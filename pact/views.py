@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpRequest
+from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 @csrf_exempt
-def set_state(request: HttpRequest) -> JsonResponse:
+def set_state(request: HttpRequest) -> HttpResponse:
     data = json.loads(request.body)
     consumer = data["consumer"]
     state = data["state"]
@@ -31,14 +31,12 @@ def set_state(request: HttpRequest) -> JsonResponse:
             {
                 "event": {"provider_id": "serlo.org", "id": "234"},
                 "created_at": "2015-08-06T16:53:10+01:00",
-                "source": {"provider_id": "serlo.org"},
             }
         )
         create_notification(
             {
                 "event": {"provider_id": "serlo.org", "id": "234"},
                 "user": {"provider_id": "serlo.org", "id": "123"},
-                "source": {"provider_id": "serlo.org"},
             }
         )
         return JsonResponse({})
@@ -46,12 +44,11 @@ def set_state(request: HttpRequest) -> JsonResponse:
         create_event(
             {
                 "event": {"provider_id": "serlo.org", "id": "123"},
-                "user": {"provider_id": "serlo.org", "id": "234"},
                 "created_at": "2015-08-06T16:53:10+01:00",
-                "source": {"provider_id": "serlo.org"},
             }
         )
         return JsonResponse({})
+    return HttpResponseBadRequest("Invalid consumer or state")
 
 
 @csrf_exempt

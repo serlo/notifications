@@ -25,7 +25,6 @@ def main() -> None:
     consumer.subscribe(["notifications"])
     try:
         while True:
-            producer.poll(0)
             msg = consumer.poll(timeout=1.0)
             if msg is None:
                 continue

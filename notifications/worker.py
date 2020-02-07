@@ -8,7 +8,7 @@ class Message(TypedDict):
     payload: Any
 
 
-def execute_message(data: Message) -> Message:
+def execute_message(data: Message) -> None:
     if data["type"] == "create-event":
         create_event(data["payload"])
     elif data["type"] == "create-notification":

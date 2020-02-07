@@ -5,12 +5,12 @@ from typing import TypedDict, List
 
 class UserPayload(TypedDict):
     provider_id: str
-    user_id: str
+    id: str
 
 
 class EventPayload(TypedDict):
-    event_id: str
     provider_id: str
+    id: str
 
 
 class CreateEventPayload(TypedDict):
@@ -24,6 +24,7 @@ class NotificationPayload(TypedDict):
 
 
 CreateNotificationPayload = NotificationPayload
+ReadNotificationPayload = NotificationPayload
 
 
 def create_event(payload: CreateEventPayload) -> Event:
@@ -40,7 +41,7 @@ def create_notification(payload: CreateNotificationPayload) -> Notification:
     return notification
 
 
-def read_notification(payload: CreateNotificationPayload) -> Notification:
+def read_notification(payload: ReadNotificationPayload) -> Notification:
     notification = create_notification(payload)
     notification.seen = True
     notification.save()

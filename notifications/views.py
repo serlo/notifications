@@ -1,10 +1,16 @@
+from typing import cast
+
 from django.shortcuts import render
 import requests
 
 # Create your views here.
 from django.conf import settings
 from django.http import HttpRequest, JsonResponse
-from .models import Notification, User
+from .models import Notification, User, NotificationJson
+
+
+class RenderedNotificationJson(NotificationJson):
+    content: str
 
 
 def index(
@@ -25,8 +31,8 @@ def index(
     else:
         rendered = {}
 
-    def f(n: Notification):
-        temp = n.to_json()
+    def f(n: Notification) -> RenderedNotificationJson:
+        temp = cast(RenderedNotificationJson, n.to_json())
         temp["content"] = rendered[n.event.event_id]["content"]
         return temp
 

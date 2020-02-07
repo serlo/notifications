@@ -5,5 +5,7 @@ jobs:
   server:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: docker build -f docker/server/Dockerfile -t serlo-org-notifications:latest .
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build -f docker/server/Dockerfile -t notifications:latest .

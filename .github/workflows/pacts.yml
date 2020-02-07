@@ -5,10 +5,38 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - run: yarn
-      - run: yarn start
-      - run: yarn pacts
+      - name: Install dependencies
+        run: yarn
+      - name: Start server
+        run: |
+          cat > docker-compose.override.yml <<-EOL
+          version: '3'
+          services:
+            server:
+              extra_hosts:
+                - "host.docker.internal:$(ip route | grep docker0 | awk '{print $9}')"
+          EOL
+          yarn start
+      - name: Wait for server to be ready
+        run: |
+          RETRIES=120
+          until curl http://localhost:8000/health > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
+            echo "Waiting for server, $((RETRIES--)) remaining attempts…"
+            sleep 1
+          done
+      - name: Verify Pact files
+        run: |
+          # Workaround for https://github.com/actions/virtual-environments/issues/267
+          sudo chmod 755 /home/runner
+          sudo chmod 755 -R /opt
+          sudo chmod 755 -R /usr/share
+          yarn pacts
+      - name: Show Pact log file on failure
+        run: cat pact-http.log
+        if: failure()
