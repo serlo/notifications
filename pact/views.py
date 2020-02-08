@@ -1,5 +1,4 @@
 from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
-from django.views.decorators.csrf import csrf_exempt
 import logging
 import json
 
@@ -11,7 +10,6 @@ from notifications.models import Notification, User, Event
 logger = logging.getLogger(__name__)
 
 
-@csrf_exempt
 def set_state(request: HttpRequest) -> HttpResponse:
     data = json.loads(request.body)
     consumer = data["consumer"]
@@ -51,7 +49,6 @@ def set_state(request: HttpRequest) -> HttpResponse:
     return HttpResponseBadRequest("Invalid consumer or state")
 
 
-@csrf_exempt
 def execute_message(request: HttpRequest) -> JsonResponse:
     payload = json.loads(request.body)
     execute(payload)
