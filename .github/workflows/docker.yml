@@ -8,4 +8,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build Docker image
-        run: docker build -f docker/server/Dockerfile -t notifications:latest .
+        run: docker build --file docker/server/Dockerfile --tag notifications-server .
+  worker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build --file docker/worker/Dockerfile --tag notifications-worker .

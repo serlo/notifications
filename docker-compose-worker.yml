@@ -19,7 +19,11 @@ services:
       context: .
       dockerfile: docker/worker/Dockerfile
     volumes:
-      - .:/usr/src/app
+      - ./docker/worker:/usr/src/app/docker/worker:delegated
+      - ./app:/usr/src/app/app:delegated
+      - ./notifications:/usr/src/app/notifications:delegated
+      - ./pact:/usr/src/app/pact:delegated
+      - ./worker.py:/usr/src/app/manage.py:delegated
     environment:
       DATABASE_HOST: db
       DATABASE_USER: postgres

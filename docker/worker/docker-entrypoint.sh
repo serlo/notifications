@@ -6,5 +6,4 @@ until psql --host $DATABASE_HOST --user $DATABASE_USER --database $DATABASE_NAME
   sleep 1
 done
 
-python manage.py migrate
-python manage.py runserver 0.0.0.0:8000
+python worker.py

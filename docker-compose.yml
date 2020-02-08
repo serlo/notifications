@@ -9,7 +9,11 @@ services:
       context: .
       dockerfile: docker/server/Dockerfile
     volumes:
-      - .:/usr/src/app
+      - ./docker/server:/usr/src/app/docker/server:delegated
+      - ./app:/usr/src/app/app:delegated
+      - ./notifications:/usr/src/app/notifications:delegated
+      - ./pact:/usr/src/app/pact:delegated
+      - ./manage.py:/usr/src/app/manage.py:delegated
     ports:
       - '8000:8000'
     environment:
