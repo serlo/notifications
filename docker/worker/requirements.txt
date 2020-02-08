@@ -1,4 +1,4 @@
 confluent_kafka ~= 1.2
-django ~= 2.2
+django ~= 3.0
 psycopg2 ~= 2.8
 requests ~= 2.22

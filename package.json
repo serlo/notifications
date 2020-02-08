@@ -14,9 +14,14 @@
     "format:py": "yarn _devtools black . --target-version py38",
     "test": "yarn m test",
     "m": "docker-compose exec -T server python manage.py",
+    "m:deprecations": "docker-compose exec -T server python -W always manage.py",
+    "pip:install": "npm-run-all pip:install:*",
+    "pip:install:devtools": "docker-compose --file docker-compose-devtools.yml run -T --rm devtools sh -c \"pip uninstall --requirement docker/devtools/requirements.lock --yes && pip install --requirement docker/devtools/requirements.txt && pip freeze > docker/devtools/requirements.lock\"",
+    "pip:install:server": "docker-compose run -T --rm server sh -c \"pip uninstall --requirement docker/server/requirements.lock --yes && pip install --requirement docker/server/requirements.txt && pip freeze > docker/server/requirements.lock\"",
+    "pip:install:worker": "docker-compose --file docker-compose-worker.yml run -T --rm worker sh -c \"pip uninstall --requirement docker/worker/requirements.lock --yes && pip install --requirement docker/worker/requirements.txt && pip freeze > docker/worker/requirements.lock\"",
     "pacts": "jest",
     "pacts:publish": "ts-node scripts/publish-pacts",
-    "_devtools": "docker-compose --file docker-compose-devtools.yml run --rm devtools",
+    "_devtools": "docker-compose --file docker-compose-devtools.yml run -T --rm devtools",
     "_prettier": "prettier \"{{__tests__,scripts}/**/*,*}.{js,jsx,ts,tsx,json,md,yaml,yml,css,scss}\""
   },
   "devDependencies": {
